@@ -16,6 +16,8 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 **************************************************************************/
 
+#nullable enable
+
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Linq;
@@ -41,6 +43,6 @@ namespace Omukade.Cheyenne.CustomMessages
         /// <summary>
         /// Checksum of valid card IDs. Always returned.
         /// </summary>
-        public string Checksum;
+        public string Checksum="";
     }
 }

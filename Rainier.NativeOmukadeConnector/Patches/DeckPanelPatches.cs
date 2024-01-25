@@ -1,4 +1,6 @@
-﻿using HarmonyLib;
+﻿#nullable disable
+
+using HarmonyLib;
 using Newtonsoft.Json;
 using SharedSDKUtils.DeckValidation;
 using System;

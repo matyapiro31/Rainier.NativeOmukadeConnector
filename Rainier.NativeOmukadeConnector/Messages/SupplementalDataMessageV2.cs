@@ -1,4 +1,6 @@
-﻿using Newtonsoft.Json;
+﻿#nullable disable
+
+using Newtonsoft.Json;
 using Platform.Sdk.Models.Inventory;
 using Platform.Sdk.Models.User;
 using SharedLogicUtils.DataTypes;

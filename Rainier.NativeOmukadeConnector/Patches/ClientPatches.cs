@@ -17,6 +17,8 @@
 **************************************************************************/
 
 // #define DEBUG_LOG_RX_MESSAGES
+#nullable enable
+
 using HarmonyLib;
 using Newtonsoft.Json;
 using Omukade.Cheyenne.CustomMessages;

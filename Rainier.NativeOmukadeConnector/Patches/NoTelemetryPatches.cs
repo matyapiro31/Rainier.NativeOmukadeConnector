@@ -16,6 +16,8 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 **************************************************************************/
 
+#nullable disable
+
 using HarmonyLib;
 using System;
 using System.Collections;

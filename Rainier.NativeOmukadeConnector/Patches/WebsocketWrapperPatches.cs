@@ -16,6 +16,8 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 **************************************************************************/
 
+#nullable disable
+
 using _Rainier.Scripts.Managers.StartUp;
 using HarmonyLib;
 using Newtonsoft.Json;

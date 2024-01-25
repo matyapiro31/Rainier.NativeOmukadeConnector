@@ -16,6 +16,8 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 **************************************************************************/
 
+#nullable disable
+
 using HarmonyLib;
 using Platform.Sdk;
 using RainierClientSDK.source.Friend.Implementations;
@@ -64,7 +66,7 @@ namespace Rainier.NativeOmukadeConnector.Patches
         static async Task GetSingleFriendStatusFromOmukadeAsync(Client instance, string friendPtcsGuid, ResponseHandler<GetFriendOnlineStatusResponse> success, ErrorHandler failure)
         {
             List<string> friendFound = GetOnlineFriendsFromOmukade(instance, new List<string> { friendPtcsGuid });
-            success?.Invoke(instance, new GetFriendOnlineStatusResponse(isOnline: friendFound.Contains(friendPtcsGuid), friendPtcsGuid));
+            await Task.Run(()=> { success?.Invoke(instance, new GetFriendOnlineStatusResponse(isOnline: friendFound.Contains(friendPtcsGuid), friendPtcsGuid)); });
         }
 
         internal static List<string> GetOnlineFriendsFromOmukade(Client instance, List<string> concernedFriends)

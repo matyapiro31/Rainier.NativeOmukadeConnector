@@ -1,4 +1,6 @@
-﻿using HarmonyLib;
+﻿#nullable disable
+
+using HarmonyLib;
 using RainierClientSDK.source.Friend.Implementations;
 using System;
 using System.Collections.Generic;
