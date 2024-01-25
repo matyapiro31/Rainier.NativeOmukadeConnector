@@ -30,7 +30,7 @@ namespace Rainier.NativeOmukadeConnector
     {
         internal const string VERSION_STRING = "Native Omukade Connector \"NOC\" 2.1.2 (\"Auditioning Audino Rev2\")";
         internal const string OMUKADE_VERSION = "Omukade Cheyenne-EX";
-        internal const string CONFIG_FILENAME = "config-noc.json";
+        internal const string CONFIG_FILENAME = "BepInEx\\config\\config-noc.json";
 
         internal static ManualLogSource SharedLogger;
         internal static ConfigurationSettings Settings;
