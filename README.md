@@ -19,7 +19,7 @@ Start the game using the TCGL Omukade shortcut (or using the command line `--ena
 Without either of these, the plugin will assume you want to connect to the offical game servers and disable itself without doing anything.
 
 ### Configuration
-In the game install directory with the Pokemon TCG Live executable, locate or create the `config-noc.json` file. An example minimum functioning config file:
+BepInEx config folder in the game install directory with the Pokemon TCG Live executable, locate or create the `config-noc.json` file. An example minimum functioning config file:
 ```json
 {"OmukadeEndpoint":"ws://cheyenne-beta.omukade.net:10850"}
 ```
