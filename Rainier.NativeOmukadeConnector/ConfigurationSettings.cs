@@ -29,7 +29,7 @@ namespace Rainier.NativeOmukadeConnector
         public string OmukadeEndpoint = "ws://cheyenne-beta.omukade.net:10850";
         public bool ForceFriendsToBeOnline = false;
         public bool EnableAllCosmetics = false;
-        public bool ForceAllLegalityChecksToSucceed = false;
+        public bool ForceAllLegalityChecksToSucceed = true;
         public bool DumpManifestFileUrl = false;
         public bool AskServerForImplementedCards = false;
         public bool ShowManagerLoadingStatus = false;

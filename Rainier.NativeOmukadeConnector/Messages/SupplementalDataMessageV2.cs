@@ -1,8 +1,8 @@
 ﻿#nullable disable
 
 using Newtonsoft.Json;
-using Platform.Sdk.Models.Inventory;
-using Platform.Sdk.Models.User;
+using ClientNetworking.Models.Inventory;
+using ClientNetworking.Models.User;
 using SharedLogicUtils.DataTypes;
 using System;
 using System.Collections.Generic;

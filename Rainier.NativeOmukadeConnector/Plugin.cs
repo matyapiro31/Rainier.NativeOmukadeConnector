@@ -39,7 +39,7 @@ namespace Rainier.NativeOmukadeConnector
         private void Awake()
         {
             SharedLogger = Logger;
-
+            
             if (!Environment.GetCommandLineArgs().Contains("--enable-omukade"))
             {
                 SharedLogger.LogWarning("Omukade not enabled by command-line; goodbye");

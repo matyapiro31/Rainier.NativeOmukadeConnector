@@ -53,16 +53,16 @@ namespace Rainier.NativeOmukadeConnector.Patches
 
         public static void OpenNewMessageFake(SimpleMessage _smgInstance, string title, string message, string buttonName, UnityEngine.Events.UnityAction confirm, UnityEngine.Events.UnityAction closeAction, bool close)
         {
-            bool isFatal = closeAction == ManagerSingleton<GameManager>.instance.RestartProject;
+            //bool isFatal = closeAction == ManagerSingleton<GameManager>.instance.RestartProject;
 
-            if (isFatal)
+            /*if (isFatal)
             {
                 Plugin.SharedLogger.LogFatal("Fatal Announcement: " + message);
             }
             else
-            {
+            {*/
                 Plugin.SharedLogger.LogFatal("Announcement: " + message);
-            }
+            //}
 
             _smgInstance.OpenNewMessage(title, message, buttonName, confirm, closeAction, close);
         }

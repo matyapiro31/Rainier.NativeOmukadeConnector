@@ -19,7 +19,8 @@
 #nullable disable
 
 using HarmonyLib;
-using Platform.Sdk;
+//using Platform.Sdk;
+using ClientNetworking;
 using RainierClientSDK.source.Friend.Implementations;
 using System;
 using System.Collections.Generic;
@@ -27,7 +28,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Threading;
-using Platform.Sdk.Models.Friend;
+using ClientNetworking.Models.Friend;
 using System.Collections.Concurrent;
 using Rainier.NativeOmukadeConnector.Messages;
 using System.Linq;
@@ -63,16 +64,16 @@ namespace Rainier.NativeOmukadeConnector.Patches
             return false;
         }
 
-        static async Task GetSingleFriendStatusFromOmukadeAsync(Client instance, string friendPtcsGuid, ResponseHandler<GetFriendOnlineStatusResponse> success, ErrorHandler failure)
+        static async Task GetSingleFriendStatusFromOmukadeAsync(IClient instance, string friendPtcsGuid, ResponseHandler<GetFriendOnlineStatusResponse> success, ErrorHandler failure)
         {
             List<string> friendFound = GetOnlineFriendsFromOmukade(instance, new List<string> { friendPtcsGuid });
             await Task.Run(()=> { success?.Invoke(instance, new GetFriendOnlineStatusResponse(isOnline: friendFound.Contains(friendPtcsGuid), friendPtcsGuid)); });
         }
 
-        internal static List<string> GetOnlineFriendsFromOmukade(Client instance, List<string> concernedFriends)
+        internal static List<string> GetOnlineFriendsFromOmukade(IClient instance, List<string> concernedFriends)
         {
             using ManualResetEvent getFriendsEvent = new ManualResetEvent(initialState: false);
-            OnlineFriendsResponse? ofr = null;
+            OnlineFriendsResponse ofr = new OnlineFriendsResponse();
             uint txId = unchecked((uint)DateTime.UtcNow.Ticks);
             // Plugin.SharedLogger.LogInfo($"Preparing to get friend data (TXID {txId})...");
             Action<OnlineFriendsResponse> respondToGetFriends = (OnlineFriendsResponse ofrReceived) =>
@@ -86,7 +87,7 @@ namespace Rainier.NativeOmukadeConnector.Patches
             };
 
             ClientPatches.ReceivedOnlineFriendsResponse += respondToGetFriends;
-            WswCommon.InjectUpsockMessage(instance, new GetOnlineFriends { FriendIds = concernedFriends, TransactionId = txId });
+            WswCommon.InjectUpsockMessage(instance as Client, new GetOnlineFriends { FriendIds = concernedFriends, TransactionId = txId });
 
             bool didGetSignalInTime = getFriendsEvent.WaitOne(TIMEOUT_FOR_FRIEND_MESSAGES);
 
@@ -107,21 +108,21 @@ namespace Rainier.NativeOmukadeConnector.Patches
     }
 
     [HarmonyPatch]
-    internal static class FriendServicePatches
+    internal static class GetFriendsPatch
     {
         // RainierClientSDK.source.Friend.Implementations.PlatformFriendService.<>c__DisplayClass26_0
         // This patches one of the async method fragments for PlatformFriendService.GetFriendsAsync.
         // I didn't want to hard-code it to a specific method name, as the name may be unstable from build to build.
         static IEnumerable<MethodBase> TargetMethods() => typeof(PlatformFriendService)
-            .GetNestedTypes(BindingFlags.Instance | BindingFlags.NonPublic)
-            .SelectMany(t => t.GetMethods(BindingFlags.Instance | BindingFlags.NonPublic))
+            .GetNestedTypes(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public)
+            .SelectMany(t => t.GetMethods(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public))
             .Where(m => m.Name.StartsWith($"<{nameof(PlatformFriendService.GetFriendsAsync)}>"))
-            .Where(m => { ParameterInfo[] mParams = m.GetParameters(); return mParams.Length == 2 && mParams[0].ParameterType == typeof(Client) && mParams[1].ParameterType == typeof(GetAllFriendsResponse); })
+            .Where(m => { ParameterInfo[] mParams = m.GetParameters(); return mParams.Length == 2 && mParams[0].ParameterType == typeof(IClient) && mParams[1].ParameterType == typeof(GetAllFriendsResponse); })
             .Take(1);
 
-        static void Prefix(Client sdk, GetAllFriendsResponse message)
+        static void Prefix(IClient sdk, GetAllFriendsResponse message)
         {
-            // Plugin.SharedLogger.LogInfo($"{nameof(PlatformFriendService.GetFriendsAsync)} - Checking Omukade for all online friends");
+            Plugin.SharedLogger.LogInfo($"{nameof(PlatformFriendService.GetFriendsAsync)} - Checking Omukade for all online friends");
             if (Plugin.Settings.ForceFriendsToBeOnline)
             {
                 foreach (FriendInfo friend in message.friendInfos)
@@ -132,7 +133,16 @@ namespace Rainier.NativeOmukadeConnector.Patches
             else
             {
                 List<string> friendIds = message.friendInfos.Select(f => f.signedAccountId.accountId).ToList();
-                List<string> onlineFriendsFound = FriendStatusPatches.GetOnlineFriendsFromOmukade(sdk, friendIds);
+                List<string> onlineFriendsFound;
+                try
+                {
+                    onlineFriendsFound = FriendStatusPatches.GetOnlineFriendsFromOmukade(sdk, friendIds);
+                }
+                catch (Exception e)
+                {
+                    BetterExceptionLogger.LogException(e);
+                    throw;
+                }
                 HashSet<string> actuallyOnlineFriends = new HashSet<string>(onlineFriendsFound);
 
                 foreach (FriendInfo friend in message.friendInfos)

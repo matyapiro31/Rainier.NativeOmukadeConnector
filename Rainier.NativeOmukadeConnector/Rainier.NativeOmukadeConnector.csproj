@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>netstandard2.1</TargetFramework>
     <AssemblyName>Rainier.NativeOmukadeConnector</AssemblyName>
     <Description>Less primative redirector sending WebSocket calls to an Omukade instance</Description>
     <Version>1.0.0</Version>
@@ -42,16 +42,15 @@
 			<HintPath>..\..\PTCGLLib\CardDatabase.DataAccess.dll</HintPath>
 			<Private>False</Private>
 		</Reference>
+		<Reference Include="ClientNetworking">
+		  <HintPath>..\..\..\..\..\..\..\Documents\Projects\Omukade\PTCGLLib\ClientNetworking.dll</HintPath>
+		</Reference>
 		<Reference Include="MatchLogic">
 			<HintPath>..\..\PTCGLLib\MatchLogic.dll</HintPath>
 			<Private>False</Private>
 		</Reference>
 		<Reference Include="NewRelicPostAPI">
 			<HintPath>..\..\PTCGLLib\NewRelicPostAPI.dll</HintPath>
-			<Private>False</Private>
-		</Reference>
-		<Reference Include="Platform.Sdk">
-			<HintPath>..\..\PTCGLLib\Platform.Sdk.dll</HintPath>
 			<Private>False</Private>
 		</Reference>
 		<Reference Include="RainierClientSDK">

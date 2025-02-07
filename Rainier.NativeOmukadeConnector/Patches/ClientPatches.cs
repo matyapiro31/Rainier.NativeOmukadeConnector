@@ -22,9 +22,9 @@
 using HarmonyLib;
 using Newtonsoft.Json;
 using Omukade.Cheyenne.CustomMessages;
-using Platform.Sdk;
-using Platform.Sdk.Stomp;
-using Platform.Sdk.Util;
+using ClientNetworking;
+using ClientNetworking.Stomp;
+using ClientNetworking.Util;
 using Rainier.NativeOmukadeConnector.Messages;
 using System;
 using System.Collections.Concurrent;
@@ -37,31 +37,34 @@ using System.Threading;
 
 namespace Rainier.NativeOmukadeConnector.Patches
 {
+    [HarmonyPatch(typeof(ClientBuilder))]
+    internal static class ClientBuilderPatches
+    {
+        [HarmonyPrefix]
+        [HarmonyPatch(nameof(ClientBuilder.Build), new Type[] { typeof(string) })]
+        static void Build(ClientBuilder __instance)
+        {
+            __instance.SetWebsocketReceiptsEnabled(false);
+#warning TODO: Implement receipts in Omukade
+            Plugin.SharedLogger.LogInfo(nameof(ClientBuilderPatches) + ": Enable Message Receipts patched to: false");
+        }
+    }
+
     [HarmonyPatch(typeof(Client))]
     internal static class ClientPatches
     {
         internal static event Action<OnlineFriendsResponse>? ReceivedOnlineFriendsResponse;
         internal static MethodInfo forwardMessageForOFR = typeof(Client)
-            .GetMethod("ForwardMessage", BindingFlags.Instance | BindingFlags.NonPublic)
+            .GetMethod("ForwardMessage", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public)
             .MakeGenericMethod(typeof(OnlineFriendsResponse));
 
         internal static event Action<ImplementedExpandedCardsV1>? ReceivedImplementedExpandedCardsV1;
         internal static MethodInfo forwardMessageForExpandedCardsV1 = typeof(Client)
-            .GetMethod("ForwardMessage", BindingFlags.Instance | BindingFlags.NonPublic)
+            .GetMethod("ForwardMessage", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public)
             .MakeGenericMethod(typeof(ImplementedExpandedCardsV1));
 
         internal static HashSet<string>? ImplementedExpandedCardsFromServer = null;
         internal static string? ImplementedExpandedCardsFromServerChecksum = null;
-
-        [HarmonyPostfix]
-        [HarmonyPatch(MethodType.Constructor)]
-        [HarmonyPatch(new Type[] { typeof(ClientBuilder), typeof(string) })]
-        static void AdjustClientSettings(ref bool ____enableMessageReceipts)
-        {
-            Plugin.SharedLogger.LogInfo(nameof(ClientPatches) + ": Enable Message Receipts patched to: false");
-#warning TODO: Implement receipts in Omukade
-            ____enableMessageReceipts = false;
-        }
 
         [HarmonyPostfix]
         [HarmonyPatch("CreateMessageHandlerMapping")]
@@ -120,7 +123,7 @@ namespace Rainier.NativeOmukadeConnector.Patches
             string isJsonString = frame.ContentType == "application/json" ? "JSON" : "BINARY";
 #pragma warning restore Harmony003 // Harmony non-ref patch parameters modified
 
-            Plugin.SharedLogger.LogInfo($"RX {isJsonString} {frame.Payload} (len={buffer.Length}, cslen={buffer.ContentSegment.Count})");
+            Plugin.SharedLogger.LogDebug($"RX {isJsonString} {frame.Payload} (len={buffer.Length}, cslen={buffer.ContentSegment.Count})");
         }
 #endif
     }
