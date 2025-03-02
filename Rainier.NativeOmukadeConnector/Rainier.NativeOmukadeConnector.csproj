@@ -43,7 +43,8 @@
 			<Private>False</Private>
 		</Reference>
 		<Reference Include="ClientNetworking">
-		  <HintPath>..\..\..\..\..\..\..\Documents\Projects\Omukade\PTCGLLib\ClientNetworking.dll</HintPath>
+		  <HintPath>..\..\PTCGLLib\ClientNetworking.dll</HintPath>
+		  <Private>True</Private>
 		</Reference>
 		<Reference Include="MatchLogic">
 			<HintPath>..\..\PTCGLLib\MatchLogic.dll</HintPath>
@@ -51,7 +52,7 @@
 		</Reference>
 		<Reference Include="NewRelicPostAPI">
 			<HintPath>..\..\PTCGLLib\NewRelicPostAPI.dll</HintPath>
-			<Private>False</Private>
+			<Private>True</Private>
 		</Reference>
 		<Reference Include="RainierClientSDK">
 			<HintPath>..\..\PTCGLLib\RainierClientSDK.dll</HintPath>
