@@ -33,5 +33,7 @@ namespace Rainier.NativeOmukadeConnector
         public bool DumpManifestFileUrl = false;
         public bool AskServerForImplementedCards = false;
         public bool ShowManagerLoadingStatus = false;
+        public bool UseProxyApi = false;
+        public string ProxyApiEndpoint = "https://localhost:7166";
     }
 }

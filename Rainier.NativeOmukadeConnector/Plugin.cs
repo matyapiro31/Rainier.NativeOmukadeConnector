@@ -19,10 +19,13 @@
 
 using BepInEx;
 using BepInEx.Logging;
+using ClientNetworking;
 using Newtonsoft.Json;
+using Rainier.NativeOmukadeConnector.Patches;
 using System;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 
 namespace Rainier.NativeOmukadeConnector
 {
@@ -60,6 +63,34 @@ namespace Rainier.NativeOmukadeConnector
             }
 
             SharedLogger.LogMessage($"Omukade endpoint set to {Settings.OmukadeEndpoint}");
+
+            if (Plugin.Settings.UseProxyApi)
+            {
+                // remove https:// or http:// from the endpoint url
+                string subdomain = "localhost:7166";
+                bool isHttps = false;
+                if (Settings.ProxyApiEndpoint.StartsWith("https://"))
+                {
+                    subdomain = Settings.ProxyApiEndpoint.Substring(8);
+                    isHttps = true;
+                }
+                else if (Settings.ProxyApiEndpoint.StartsWith("http://"))
+                {
+                    subdomain = Settings.ProxyApiEndpoint.Substring(7);
+                    isHttps = false;
+                }
+                // override readonly field Stages.PROD
+                var field = typeof(Stages).GetField("PROD", BindingFlags.Static | BindingFlags.Public);
+                if (isHttps)
+                {
+                    field.SetValue(null, new OmukadeSecureStage(subdomain));
+                }
+                else
+                {
+                    field.SetValue(null, new OmukadeStage(subdomain));
+                }
+                SharedLogger.LogMessage($"API proxy endpoint set to {Settings.ProxyApiEndpoint}");
+            }
 
 
             // Plugin startup logic
