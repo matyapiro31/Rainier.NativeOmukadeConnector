@@ -16,8 +16,6 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 **************************************************************************/
 
-#nullable disable
-
 using CardDatabase.DataAccess;
 using HarmonyLib;
 using SharedLogicUtils.Config;
@@ -67,6 +65,7 @@ namespace Rainier.NativeOmukadeConnector.Patches
     [HarmonyPatch(typeof(RulesFormat), nameof(RulesFormat.IsCardValidForFormat))]
     static class RulesFormat_UseImplementedExpandedListInsteadOfFormats
     {
+        [HarmonyPrepare]
         static bool Prepare() => Plugin.Settings.AskServerForImplementedCards;
 
         static bool Prefix(CardDataRow card, ref bool __result, DeckFormat ___format)
@@ -93,6 +92,19 @@ namespace Rainier.NativeOmukadeConnector.Patches
             }
 
             return true;
+        }
+    }
+    [HarmonyPatch(typeof(DeckValidationManager), nameof(DeckValidationManager.ValidateDeckIgnoreUnowned))]
+    static class RulesFormat_UseImplementedExpandedListInsteadOfFormats_Banned
+    {
+        [HarmonyPrepare]
+        static bool Prepare() => Plugin.Settings.ForceAllLegalityChecksToSucceed;
+        [HarmonyPrefix]
+        static bool UseOmukadeDeckChecker(ref bool __result, DeckInfo deck)
+        {
+            Plugin.SharedLogger.LogWarning("Using Omukade Deck Checker instead of the default one.");
+            __result = OmukadeDeckUtils.ValidateDeck(deck);
+            return false;
         }
     }
 }

@@ -26,7 +26,7 @@ using System.Text;
 
 namespace Rainier.NativeOmukadeConnector.Patches
 {
-    [HarmonyPatch(typeof(GameSettingsEndpoint), "Initialize")]
+    [HarmonyPatch(typeof(GameSettingsEndpoint), "Initialize", MethodType.Enumerator)]
     internal static class DumpGameSettingsManifest
     {
         [HarmonyPrepare]
@@ -35,7 +35,7 @@ namespace Rainier.NativeOmukadeConnector.Patches
         [HarmonyPrefix]
         static void Prefix()
         {
-            using StreamWriter writer = new StreamWriter("rnoc-game-settings-endpoints.log");
+            using StreamWriter writer = new StreamWriter("BepInEx\\logs\\rnoc-game-settings-endpoints.log");
             writer.WriteLine("GSES.GetConfigPath: " + GameSettingsEndpointSettings.instance.GetConfigPath());
 
             writer.Close();

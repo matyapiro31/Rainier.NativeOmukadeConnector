@@ -19,8 +19,6 @@
 #nullable disable
 
 using HarmonyLib;
-//using Platform.Sdk;
-//using Platform.Sdk.Models.GameServer;
 using ClientNetworking;
 using ClientNetworking.Models.GameServer;
 using System;

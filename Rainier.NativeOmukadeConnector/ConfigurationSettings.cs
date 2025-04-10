@@ -35,5 +35,8 @@ namespace Rainier.NativeOmukadeConnector
         public bool ShowManagerLoadingStatus = false;
         public bool UseProxyApi = false;
         public string ProxyApiEndpoint = "https://localhost:7166";
+        public bool OverrideCardDefinition = false;
+        public string CardDefinitionDirectory = "BepInEx\\plugins\\Rainier.NativeOmukadeConnector\\CardDefinitions";
+        public string InvalidCardIdsFile = "BepInEx\\plugins\\Rainier.NativeOmukadeConnector\\invalid-card-ids.txt";
     }
 }

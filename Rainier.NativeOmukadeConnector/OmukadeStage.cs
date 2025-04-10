@@ -28,7 +28,7 @@ namespace Rainier.NativeOmukadeConnector
         {
             this._subdomain = subdomain;
             this.name = "OmukadeStage";
-            this.GlobalRoute = new DomainRoute(true, false, this._subdomain, null);
+            this.GlobalRoute = new OmukadeRoute(true, false, this._subdomain, null);
         }
         public IRoute RouteForRegion(string region)
         {
@@ -36,15 +36,15 @@ namespace Rainier.NativeOmukadeConnector
             if (int.TryParse(region, out _port))
             {
                 string subdomainNoport = this._subdomain.Split(':')[0];
-                return new DomainRoute(false, false, subdomainNoport + ":" + _port, null);
+                return new OmukadeRoute(false, false, subdomainNoport + ":" + _port, null);
             }
             string text = this._subdomain;
-            return new DomainRoute(false, true, text, null);
+            return new OmukadeRoute(false, true, text, null);
         }
 
         public IRoute RouteForResponse(QueryRouteResponse route)
         {
-            return new DomainRoute(false, false, this._subdomain, route.serviceGroup);
+            return new OmukadeRoute(false, false, this._subdomain, route.serviceGroup);
         }
 
         public override string ToString()
@@ -75,7 +75,7 @@ namespace Rainier.NativeOmukadeConnector
         {
             this._subdomain = subdomain;
             this.name = "OmukadeSecureStage";
-            this.GlobalRoute = new DomainRoute(true, true, this._subdomain, null);
+            this.GlobalRoute = new OmukadeRoute(true, true, this._subdomain, null);
         }
         public IRoute RouteForRegion(string region)
         {
@@ -83,15 +83,15 @@ namespace Rainier.NativeOmukadeConnector
             if (int.TryParse(region, out _port))
             {
                 string subdomainNoport = this._subdomain.Split(':')[0];
-                return new DomainRoute(false, true, subdomainNoport + ":" + _port, null);
+                return new OmukadeRoute(false, true, subdomainNoport + ":" + _port, null);
             }
             string text = this._subdomain;
-            return new DomainRoute(false, true, text, null);
+            return new OmukadeRoute(false, true, text, null);
         }
 
         public IRoute RouteForResponse(QueryRouteResponse route)
         {
-            return new DomainRoute(false, true, this._subdomain, route.serviceGroup);
+            return new OmukadeRoute(false, true, this._subdomain, route.serviceGroup);
         }
 
         public override string ToString()

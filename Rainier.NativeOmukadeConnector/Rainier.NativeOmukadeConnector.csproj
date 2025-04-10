@@ -4,7 +4,7 @@
     <TargetFramework>netstandard2.1</TargetFramework>
     <AssemblyName>Rainier.NativeOmukadeConnector</AssemblyName>
     <Description>Less primative redirector sending WebSocket calls to an Omukade instance</Description>
-    <Version>1.0.3</Version>
+    <Version>1.1.4</Version>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
@@ -45,6 +45,9 @@
 		<Reference Include="ClientNetworking">
 		  <HintPath>..\..\PTCGLLib\ClientNetworking.dll</HintPath>
 		  <Private>True</Private>
+		</Reference>
+		<Reference Include="ICSharpCode.SharpZipLib">
+		  <HintPath>..\..\PTCGLLib\ICSharpCode.SharpZipLib.dll</HintPath>
 		</Reference>
 		<Reference Include="MatchLogic">
 			<HintPath>..\..\PTCGLLib\MatchLogic.dll</HintPath>

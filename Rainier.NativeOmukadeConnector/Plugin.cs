@@ -23,9 +23,11 @@ using ClientNetworking;
 using Newtonsoft.Json;
 using Rainier.NativeOmukadeConnector.Patches;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using UnityEngine.Scripting;
 
 namespace Rainier.NativeOmukadeConnector
 {
@@ -38,7 +40,7 @@ namespace Rainier.NativeOmukadeConnector
 
         internal static ManualLogSource SharedLogger;
         internal static ConfigurationSettings Settings;
-
+        
         private void Awake()
         {
             SharedLogger = Logger;
@@ -91,8 +93,35 @@ namespace Rainier.NativeOmukadeConnector
                 }
                 SharedLogger.LogMessage($"API proxy endpoint set to {Settings.ProxyApiEndpoint}");
             }
-
-
+            if (Plugin.Settings.OverrideCardDefinition)
+            {
+                // Load Card Definitions from CardDefinitionDirectory.
+                try
+                {
+                    if (Directory.Exists(Plugin.Settings.CardDefinitionDirectory))
+                    {
+                        // Remove .json from the directory path
+                        OmukadeDeckUtils.overrideCardIDs = Directory.GetFileSystemEntries(Plugin.Settings.CardDefinitionDirectory, "*.json").Select(f => Path.GetFileNameWithoutExtension(f)).ToList();
+                        OmukadeDeckUtils.cardDefinitionOverrides = new List<string>();
+                        List<string> overridesPaths = Directory.GetFiles(Plugin.Settings.CardDefinitionDirectory).Where(f => f.EndsWith(".json")).ToList();
+                        foreach (var overridePath in overridesPaths)
+                        {
+                            string overrideJson = File.ReadAllText(overridePath);
+                            OmukadeDeckUtils.cardDefinitionOverrides.Add(overrideJson);
+                        }
+                        
+                        SharedLogger.LogMessage($"Card Source Definitions loaded from {Plugin.Settings.CardDefinitionDirectory}");
+                    }
+                    else
+                    {
+                        SharedLogger.LogMessage($"Card Source Definitions Not found.");
+                    }
+                }
+                catch (Exception e)
+                {
+                    SharedLogger.LogError($"Error loading card source definitions: {e}");
+                }
+            }
             // Plugin startup logic
             SharedLogger.LogInfo($"Performing patches for NOC...");
 
