@@ -26,10 +26,11 @@ namespace Rainier.NativeOmukadeConnector
 {
     internal class ConfigurationSettings
     {
-        public string OmukadeEndpoint = "ws://cheyenne-beta.omukade.net:10850";
+        public string OmukadeEndpoint = "ws://localhost:10850";
         public bool ForceFriendsToBeOnline = false;
         public bool EnableAllCosmetics = false;
         public bool ForceAllLegalityChecksToSucceed = true;
+        public string InvalidCardIdsFile = "BepInEx\\config\\invalid-card-ids.txt";
         public bool DumpManifestFileUrl = false;
         public bool AskServerForImplementedCards = false;
         public bool ShowManagerLoadingStatus = false;
@@ -37,6 +38,5 @@ namespace Rainier.NativeOmukadeConnector
         public string ProxyApiEndpoint = "https://localhost:7166";
         public bool OverrideCardDefinition = false;
         public string CardDefinitionDirectory = "BepInEx\\plugins\\Rainier.NativeOmukadeConnector\\CardDefinitions";
-        public string InvalidCardIdsFile = "BepInEx\\plugins\\Rainier.NativeOmukadeConnector\\invalid-card-ids.txt";
     }
 }

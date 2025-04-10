@@ -24,12 +24,16 @@ BepInEx config folder in the game install directory with the Pokemon TCG Live ex
 {"OmukadeEndpoint":"ws://cheyenne-beta.omukade.net:10850"}
 ```
 All currently supported configurations are:
-* OmukadeEndpoint - **RECOMMENDED**. Configures the Omukade server to use. Default: `ws://cheyenne-beta.omukade.net:10850`
+* OmukadeEndpoint - **RECOMMENDED**. Configures the Omukade server to use. Default: `ws://localhost:10850`
 * EnableAllCosmetics (true/false - default false) - _Avoid using._ Very crudely enables the use of all deck cosmetics. Unowned cosmetics may render oddly in selection menus. May or may not be a bannable offense if used on offical servers.
 * ForceAllLegalityChecksToSucceed (true/false - default false) - _Debug setting, avoid using._ Forces all decks to appear legal even if they contain out-of-format cards. The server can still reject your invalid deck (official servers do reject, so don't bother using this to cheat.)
-* ForceFriendsToBeOnline (true/false - default false) - _Debug setting, avoid using._ Forces all friends to appear online, even if they aren't.
+* InvalidCardIdsFile - If ForceAllLegalityChecksToSucceed is true, this file will be used to determine which cards are invalid. This file should contain a list of card IDs, one per line. The default is `BepInEx\\config\\invalid-card-ids.txt`.
+* * ForceFriendsToBeOnline (true/false - default false) - _Debug setting, avoid using._ Forces all friends to appear online, even if they aren't.
 * DumpManifestFileUrl (true/false - default false) - _Debug setting, avoid using._ Dumps the URL containing the current game version's information manifest.
-
+* UseProxyApi (true/false - default false) - Forces the game to use a proxy server. If you set proxy server, PTCGL's API will be overwritten to **ProxyApiEndpoint**. 
+* ProxyApiEndpoint - Configures the proxy server to use. Default: `https://localhost:7166`
+* OverrideCardDefinition (true/false - default false) - Enable Card overriding when using deck test mode. When enabled, you can use unimplemented expanded cards in test deck.
+* CardDefinitionDirectory - Card Definition json files directory. Default: `BepInEx\\plugins\\Rainier.NativeOmukadeConnector\\CardDefinitions`
 ### Compatable Servers
 Rainier NOC is compatable with the following server implementations:
 * Omukade Cheyenne
