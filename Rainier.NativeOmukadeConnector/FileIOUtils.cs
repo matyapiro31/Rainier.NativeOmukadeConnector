@@ -31,11 +31,13 @@ namespace Rainier.NativeOmukadeConnector
             // Read all file data as string. If format is directory, return all files in directory.
             if (format != "directory" && !File.Exists(path))
             {
-                throw new FileNotFoundException($"File not found: {path}");
+                Plugin.SharedLogger.LogWarning($"File not found: {path}. Creating empty file...");
+                File.Create(path).Close();
+                return new ConcurrentBag<string>();
             }
             if (format == "directory" && !Directory.Exists(path))
             {
-                Plugin.SharedLogger.LogInfo($"Directory not found: {path}. Creating empty directory...");
+                Plugin.SharedLogger.LogWarning($"Directory not found: {path}. Creating empty directory...");
                 Directory.CreateDirectory(path);
                 return new ConcurrentBag<string>();
             }
