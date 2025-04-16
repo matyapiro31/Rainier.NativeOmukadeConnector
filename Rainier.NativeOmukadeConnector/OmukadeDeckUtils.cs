@@ -69,6 +69,18 @@ namespace Rainier.NativeOmukadeConnector
         }
         public static void FilterOverrideCardIDs(ref List<string> cardIDs, List<string> overrideCardIDs, out List<string> originalCardIDs, out List<string> filteredDeckCardIDs)
         {
+            if (Directory.GetLastWriteTimeUtc(Plugin.Settings.CardDefinitionDirectory) > Plugin.LastUpdateTime)
+            {
+                overrideCardIDs = Directory.GetFileSystemEntries(Plugin.Settings.CardDefinitionDirectory, "*.json").Select(f => Path.GetFileNameWithoutExtension(f)).ToList();
+                cardDefinitionOverrides = new List<string>();
+                List<string> overridesPaths = Directory.GetFiles(Plugin.Settings.CardDefinitionDirectory).Where(f => f.EndsWith(".json")).ToList();
+                foreach (var overridePath in overridesPaths)
+                {
+                    string overrideJson = File.ReadAllText(overridePath);
+                    cardDefinitionOverrides.Add(overrideJson);
+                }
+                Plugin.LastUpdateTime = DateTime.Now;
+            }
             originalCardIDs = new List<string>(cardIDs);
             filteredDeckCardIDs = new List<string>();
             foreach (string overrideCardID in overrideCardIDs)
@@ -86,9 +98,9 @@ namespace Rainier.NativeOmukadeConnector
         }
         public static void ResetCardIDs(ref List<string> cardIDs)
         {
-            cardIDs = new List<string>(originalCardIDs);
-            originalCardIDs!.Clear();
-            filteredDeckCardIDs!.Clear();
+            cardIDs = new List<string>(OmukadeDeckUtils.originalCardIDs);
+            OmukadeDeckUtils.originalCardIDs!.Clear();
+            OmukadeDeckUtils.filteredDeckCardIDs!.Clear();
         }
         public static List<string>? overrideCardIDs;
         public static List<string>? cardDefinitionOverrides;

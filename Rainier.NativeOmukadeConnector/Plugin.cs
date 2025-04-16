@@ -40,7 +40,8 @@ namespace Rainier.NativeOmukadeConnector
 
         internal static ManualLogSource SharedLogger;
         internal static ConfigurationSettings Settings;
-        
+        internal static DateTime LastUpdateTime = DateTime.Now;
+
         private void Awake()
         {
             SharedLogger = Logger;
@@ -109,7 +110,7 @@ namespace Rainier.NativeOmukadeConnector
                             string overrideJson = File.ReadAllText(overridePath);
                             OmukadeDeckUtils.cardDefinitionOverrides.Add(overrideJson);
                         }
-                        
+                        LastUpdateTime = DateTime.Now;
                         SharedLogger.LogMessage($"Card Source Definitions loaded from {Plugin.Settings.CardDefinitionDirectory}");
                     }
                     else
