@@ -73,6 +73,7 @@ namespace Rainier.NativeOmukadeConnector.Patches
             yield return new CodeInstruction(OpCodes.Ret);
         }
     }
+    [HarmonyPatch]
     static class CreateCardDataCacheMessage
     {
         [HarmonyPrepare]
@@ -85,6 +86,7 @@ namespace Rainier.NativeOmukadeConnector.Patches
             .Take(1);
         static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
+            FXManager fxManager = new FXManager();
             foreach (var instruction in instructions)
             {
                 if (instruction.opcode == OpCodes.Beq)

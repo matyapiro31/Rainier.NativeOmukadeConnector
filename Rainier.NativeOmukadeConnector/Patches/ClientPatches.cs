@@ -34,6 +34,9 @@ using System.IO;
 using System.Reflection;
 using System.Text;
 using System.Threading;
+using ClientNetworking.Models.GameServer;
+using ClientNetworking.Codecs;
+using System.Runtime.InteropServices.ComTypes;
 
 namespace Rainier.NativeOmukadeConnector.Patches
 {
@@ -44,9 +47,8 @@ namespace Rainier.NativeOmukadeConnector.Patches
         [HarmonyPatch(nameof(ClientBuilder.Build), new Type[] { typeof(string) })]
         static void Build(ClientBuilder __instance)
         {
-            __instance.SetWebsocketReceiptsEnabled(false);
-#warning TODO: Implement receipts in Omukade
-            Plugin.SharedLogger.LogInfo(nameof(ClientBuilderPatches) + ": Enable Message Receipts patched to: false");
+            //__instance.SetWebsocketReceiptsEnabled(false);
+            __instance.SetWebsocketMessageLoggingEnabled(true);
         }
     }
 
@@ -113,18 +115,34 @@ namespace Rainier.NativeOmukadeConnector.Patches
 
             Plugin.SharedLogger.LogWarning(sb.ToString());
         }
-
-#if DEBUG_LOG_RX_MESSAGES
-        [HarmonyPrefix]
+    }
+    [HarmonyPatch(typeof(Client))]
+    internal static class ClientPatchesDebug
+    {
+        [HarmonyPrepare]
+        static bool Prepare() => Plugin.Settings.EnableDebugInfo;
+        [HarmonyPostfix]
         [HarmonyPatch("Dispatch")]
-        static void LogRxMessage(StompFrame frame, ReusableBuffer buffer)
+        static void LogRxMessage(ref StompFrame frame, ReusableBuffer buffer)
         {
-#pragma warning disable Harmony003 // Harmony non-ref patch parameters modified
             string isJsonString = frame.ContentType == "application/json" ? "JSON" : "BINARY";
-#pragma warning restore Harmony003 // Harmony non-ref patch parameters modified
-
-            Plugin.SharedLogger.LogDebug($"RX {isJsonString} {frame.Payload} (len={buffer.Length}, cslen={buffer.ContentSegment.Count})");
+            if (buffer.ContentSegment.Array.Length > 2)
+            {
+                // deserialize the FlatBuffers message.
+                string decodedContent = Encoding.UTF8.GetString(buffer.ContentSegment.Array, buffer.ContentSegment.Offset, buffer.ContentSegment.Array.Length).Split('\0')[0];
+                
+                Plugin.SharedLogger.LogInfo($"\t Websocket dump: \r\n\tContent Type: {isJsonString}\r\n\t MessageType: {frame.Payload}\r\n\t Content: {decodedContent}\r\n");
+                //Open a file and write the decodedContent to it.
+                string filePath = "BepInEx\\logs\\WebsocketDump.txt";
+                using (StreamWriter sw = new StreamWriter(filePath, true))
+                {
+                    sw.WriteLine($"\t Websocket dump: \r\n\tContent Type: {isJsonString}\r\n\t MessageType: {frame.Payload}\r\n\t Content: {decodedContent}\r\n");
+                }
+            }
+            else
+            {
+                Plugin.SharedLogger.LogInfo($"\t Websocket dump: Content Type: {isJsonString}\r\n\t  MessageType: {frame.Payload}\r\n");
+            }
         }
-#endif
     }
 }

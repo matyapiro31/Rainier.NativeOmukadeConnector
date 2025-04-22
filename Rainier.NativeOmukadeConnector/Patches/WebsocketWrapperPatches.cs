@@ -47,6 +47,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using TPCI.Commands;
 using TPCI.Localization;
+using ClientNetworking.Stomp;
+using ClientNetworking.Util;
 
 namespace Rainier.NativeOmukadeConnector.Patches
 {
@@ -209,7 +211,24 @@ namespace Rainier.NativeOmukadeConnector.Patches
             Delegate onOpenHandler = Delegate.CreateDelegate(wsOpenEventHandlerType, new OnOpenEventHandlerDelegate { parentClient = parentClient }, nameof(OnOpenEventHandlerDelegate.FireEvent));
             onOpenEvent.AddEventHandler(__result, onOpenHandler);
         }
-
+        [HarmonyPatch]
+        internal static class WsEventLogPatches
+        {
+            static MethodBase TargetMethod()
+            {
+                return AccessTools.TypeByName("ClientNetworking.WsEventLog")
+                    .GetMethod("Add", AccessTools.all);
+            }
+            [HarmonyPrepare]
+            static bool Prepare() => Plugin.Settings.EnableDebugInfo;
+            [HarmonyPrefix]
+            [HarmonyPatch]
+            static bool Prefix(string str)
+            {
+                Plugin.SharedLogger.LogDebug($"WsEventLog: {str}");
+                return true;
+            }
+        }
         private class OnOpenEventHandlerDelegate
         {
             internal Client parentClient;
