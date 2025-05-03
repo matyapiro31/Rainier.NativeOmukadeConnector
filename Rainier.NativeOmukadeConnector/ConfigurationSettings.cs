@@ -39,5 +39,6 @@ namespace Rainier.NativeOmukadeConnector
         public bool OverrideCardDefinition = false;
         public string CardDefinitionDirectory = "BepInEx\\plugins\\Rainier.NativeOmukadeConnector\\CardDefinitions";
         public bool EnableDebugInfo = false;
+        public bool SetOwnedCardToMax = false;
     }
 }

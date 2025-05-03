@@ -104,7 +104,7 @@ namespace Rainier.NativeOmukadeConnector.Patches
                 }
             });
         }
-
+        /*
         [HarmonyPrefix]
         [HarmonyPatch(nameof(Client.EnterRegionAsync))]
         static void WarnOfRegionChange()
@@ -115,6 +115,7 @@ namespace Rainier.NativeOmukadeConnector.Patches
 
             Plugin.SharedLogger.LogWarning(sb.ToString());
         }
+        */
     }
     [HarmonyPatch(typeof(Client))]
     internal static class ClientPatchesDebug

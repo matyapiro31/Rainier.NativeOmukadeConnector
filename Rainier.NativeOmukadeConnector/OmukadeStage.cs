@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Rainier.NativeOmukadeConnector
 {
-    public class OmukadeStage : Stage
+    public class OmukadeStage : IStage
     {
         public bool VerifySslCert
         {
@@ -21,13 +21,13 @@ namespace Rainier.NativeOmukadeConnector
         public IRoute GlobalRoute
         { get; }
 
-        public string name
+        public string Name
         { get; set; }
 
         public OmukadeStage(string subdomain)
         {
             this._subdomain = subdomain;
-            this.name = "OmukadeStage";
+            this.Name = "OmukadeStage";
             this.GlobalRoute = new OmukadeRoute(true, false, this._subdomain, null);
         }
         public IRoute RouteForRegion(string region)
@@ -49,11 +49,11 @@ namespace Rainier.NativeOmukadeConnector
 
         public override string ToString()
         {
-            return this.name;
+            return this.Name;
         }
         private string _subdomain;
     }
-    public class OmukadeSecureStage : Stage
+    public class OmukadeSecureStage : IStage
     {
         public bool VerifySslCert
         {
@@ -68,13 +68,13 @@ namespace Rainier.NativeOmukadeConnector
         public IRoute GlobalRoute
         { get; }
 
-        public string name
+        public string Name
         { get; set; }
 
         public OmukadeSecureStage(string subdomain)
         {
             this._subdomain = subdomain;
-            this.name = "OmukadeSecureStage";
+            this.Name = "OmukadeSecureStage";
             this.GlobalRoute = new OmukadeRoute(true, true, this._subdomain, null);
         }
         public IRoute RouteForRegion(string region)
@@ -96,7 +96,7 @@ namespace Rainier.NativeOmukadeConnector
 
         public override string ToString()
         {
-            return this.name;
+            return this.Name;
         }
         private string _subdomain;
     }

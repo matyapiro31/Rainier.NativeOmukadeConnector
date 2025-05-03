@@ -40,6 +40,9 @@ namespace Rainier.NativeOmukadeConnector.Patches
     [HarmonyPatch(typeof(ArchetypeDBCards))]
     static class ArchetypeDBCardsPatches
     {
+        [HarmonyPrepare]
+        static bool Prepare() => Plugin.Settings.SetOwnedCardToMax;
+
         [HarmonyPatch(nameof(ArchetypeDBCards.QuantityForCard))]
         [HarmonyPrefix]
         static bool QuantityForCard(ref int __result)
@@ -61,6 +64,25 @@ namespace Rainier.NativeOmukadeConnector.Patches
         static bool TotalOwnedQuantityForSpecificCard(ref int __result)
         {
             __result = 60;
+            return false;
+        }
+    }
+    [HarmonyPatch(typeof(HUBEditDeckController), nameof(HUBEditDeckController.CanAddCard))]
+    static class AddCardPatchHUBEditDeckController
+    {
+        static bool Prefix(ref bool __result)
+        {
+            __result = true;
+            return false;
+        }
+    }
+    
+    [HarmonyPatch(typeof(TPCI.DeckValidation.DefaultDeckValidationController), nameof(TPCI.DeckValidation.DefaultDeckValidationController.CanAddCard))]
+    static class AddCardPatchDefaultDeckValidationController
+    {
+        static bool Prefix(ref bool __result)
+        {
+            __result = true;
             return false;
         }
     }

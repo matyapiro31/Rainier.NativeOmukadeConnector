@@ -18,24 +18,13 @@
 
 using HarmonyLib;
 using MatchLogic;
-using MonoMod.Utils;
 using Newtonsoft.Json;
-using RainierClientSDK.Query;
 using RainierClientSDK.source.CardInfo;
-using RainierClientSDK.source.Friend.Implementations;
-using SharedLogicUtils.DataTypes;
-using SharedLogicUtils.source.Services.Query.Contexts;
-using SharedLogicUtils.source.Services.Query.Responses;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Rainier.NativeOmukadeConnector.Patches
 {

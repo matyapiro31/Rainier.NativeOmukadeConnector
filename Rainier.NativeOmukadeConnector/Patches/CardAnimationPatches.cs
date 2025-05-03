@@ -1,9 +1,13 @@
 ﻿
 
 using HarmonyLib;
-using System.Text;
+using System;
 using TPCI.Rainier.Match.Cards;
 using UnityEngine;
+using DG.Tweening;
+using DG.Tweening.Core;
+using DG.Tweening.Plugins.Options;
+using System.Reflection;
 
 namespace Rainier.NativeOmukadeConnector.Patches
 {
@@ -25,23 +29,35 @@ namespace Rainier.NativeOmukadeConnector.Patches
     internal class CardAnimationPlayPatches
     {
         [HarmonyPrefix]
-        static bool Prefix(ref CardAnimTimed __instance, ICardPositioner positioner)
+        static bool Prefix(MethodBase __originalMethod, ref CardAnimTimed __instance, ref CardMover ___dataProvidingMover, ref TweenerCore<float, float, FloatOptions> ___positionTween,
+            ref Vector3 ___startPos, ref Quaternion ___startRot,
+            ref Vector3 ___startScale, ref Vector3 ___endPos, ref Quaternion ___endRot, ref Vector3 ___endScale,
+            ICardPositioner positioner)
         {
             Behaviour behaviour = (Behaviour)positioner;
-            if (__instance.space == Space.Self && positioner != null && positioner is Behaviour && behaviour.isActiveAndEnabled && positioner.Transform.localScale != null)
+            if (__instance.space == Space.World)
             {
                 return true;
             }
-            else if (__instance.space == Space.World)
+            if (positioner != null && positioner is Behaviour && behaviour.isActiveAndEnabled)
             {
-                return true;
+                positioner.Transform!.GetLocalPositionAndRotation(out Vector3 localPosition, out Quaternion localRotation);
+                if (localPosition != null && localRotation != null)
+                {
+                    positioner.Transform!.localPosition = localPosition;
+                    positioner.Transform!.localRotation = localRotation;
+                    return true;
+                }
+                else if (localRotation != null)
+                {
+                    if (positioner.Transform!.localPosition == null)
+                    {
+                        positioner.Transform!.localPosition = Vector3.zero;
+                    }
+                    positioner.Transform!.localRotation = localRotation;
+                    return true;
+                }
             }
-            if (__instance.startingLayer != -1 && __instance.startingLayer != positioner!.Transform!.gameObject.layer)
-            {
-                positioner.SetCardLayer(__instance.startingLayer);
-            }
-            //__instance.Init(positioner);
-            AccessTools.Method(typeof(CardTransformAnimation), "Init").Invoke(__instance, new object[] { positioner! });
             return false;
         }
     }
