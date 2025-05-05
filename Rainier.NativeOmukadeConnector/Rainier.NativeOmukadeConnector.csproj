@@ -46,16 +46,15 @@
 		  <HintPath>..\..\PTCGLLib\ClientNetworking.dll</HintPath>
 		  <Private>True</Private>
 		</Reference>
+		<Reference Include="DOTween">
+		  <HintPath>..\..\PTCGLLib\DOTween.dll</HintPath>
+		</Reference>
 		<Reference Include="ICSharpCode.SharpZipLib">
 		  <HintPath>..\..\PTCGLLib\ICSharpCode.SharpZipLib.dll</HintPath>
 		</Reference>
 		<Reference Include="MatchLogic">
 			<HintPath>..\..\PTCGLLib\MatchLogic.dll</HintPath>
 			<Private>False</Private>
-		</Reference>
-		<Reference Include="NewRelicPostAPI">
-			<HintPath>..\..\PTCGLLib\NewRelicPostAPI.dll</HintPath>
-			<Private>True</Private>
 		</Reference>
 		<Reference Include="RainierClientSDK">
 			<HintPath>..\..\PTCGLLib\RainierClientSDK.dll</HintPath>
@@ -77,6 +76,9 @@
 			<HintPath>..\..\PTCGLLib\TPCIBuildtoolsRuntime.dll</HintPath>
 			<Private>False</Private>
 		</Reference>
+		<Reference Include="UnitTests">
+		  <HintPath>..\..\PTCGLLib\UnitTests.dll</HintPath>
+		</Reference>
 		<Reference Include="Unity.TextMeshPro">
 			<HintPath>..\..\PTCGLLib\Unity.TextMeshPro.dll</HintPath>
 			<Private>False</Private>
@@ -90,10 +92,6 @@
 		</Reference>
 		<Reference Include="RainierCompendium">
 			<HintPath>..\..\PTCGLLib\RainierCompendium.dll</HintPath>
-			<Private>False</Private>
-		</Reference>
-		<Reference Include="NewRelicPostInterfaces">
-			<HintPath>..\..\PTCGLLib\NewRelicPostInterfaces.dll</HintPath>
 			<Private>False</Private>
 		</Reference>
 		<Reference Include="TPCICommand">

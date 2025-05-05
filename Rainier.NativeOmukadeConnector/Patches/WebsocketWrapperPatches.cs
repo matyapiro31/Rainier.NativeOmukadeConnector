@@ -49,6 +49,7 @@ using TPCI.Commands;
 using TPCI.Localization;
 using ClientNetworking.Stomp;
 using ClientNetworking.Util;
+using PTCGLLibrary.Tests;
 
 namespace Rainier.NativeOmukadeConnector.Patches
 {
@@ -62,7 +63,7 @@ namespace Rainier.NativeOmukadeConnector.Patches
 
         internal static MethodInfo _SendCommandGeneric = wswType.GetMethod("SendCommand", BindingFlags.Instance | BindingFlags.Public);
 
-        internal static ICodec JsonCodec = (ICodec) platformSdkAssembly.GetType("ClientNetworking.Codecs.CodecUtil").GetMethod("Codec", BindingFlags.Static | BindingFlags.Public).Invoke(null, new object[] { SerializationFormat.JSON });
+        internal static ICodec JsonCodec = ClientNetworkingExtension.GetSerializationResolver(SerializationFormat.JSON);
 
         internal static object wswInstance = new object();
 
@@ -241,12 +242,12 @@ namespace Rainier.NativeOmukadeConnector.Patches
                 Plugin.SharedLogger.LogMessage($"Sending SDM[screenname={screenName},playerid={parentClient.AccountId}]");
                 try
                 {
-                    WswCommon.ForceIsConnectedOnWsw(parentClient);
-                    WswCommon.InjectUpsockMessage(client: parentClient, new SupplementalDataMessageV2 { PlayerDisplayName = screenName, PlayerId = parentClient.AccountId });
+                    ClientNetworkingExtension.SetConnectedTrue(parentClient);
+                    ClientNetworkingExtension.InjectUpsockMessage(client: parentClient, new SupplementalDataMessageV2 { PlayerDisplayName = screenName, PlayerId = parentClient.AccountId });
 
                     if(Plugin.Settings.AskServerForImplementedCards)
                     {
-                        WswCommon.InjectUpsockMessage(client: parentClient, new GetImplementedExpandedCardsV1());
+                        ClientNetworkingExtension.InjectUpsockMessage(client: parentClient, new GetImplementedExpandedCardsV1());
                     }
                 }
                 catch(Exception e)

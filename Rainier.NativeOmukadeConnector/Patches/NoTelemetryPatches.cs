@@ -29,7 +29,6 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using TPCI.Commands;
 using TPCI.NetworkSystem;
-using TPCI.NewRelic;
 using TPCI.Telemetry;
 
 namespace Rainier.NativeOmukadeConnector.Patches

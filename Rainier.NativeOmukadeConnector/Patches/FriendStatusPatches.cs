@@ -33,6 +33,7 @@ using System.Collections.Concurrent;
 using Rainier.NativeOmukadeConnector.Messages;
 using System.Linq;
 using Newtonsoft.Json;
+using PTCGLLibrary.Tests;
 
 namespace Rainier.NativeOmukadeConnector.Patches
 {
@@ -87,7 +88,7 @@ namespace Rainier.NativeOmukadeConnector.Patches
             };
 
             ClientPatches.ReceivedOnlineFriendsResponse += respondToGetFriends;
-            WswCommon.InjectUpsockMessage(instance as Client, new GetOnlineFriends { FriendIds = concernedFriends, TransactionId = txId });
+            ClientNetworkingExtension.InjectUpsockMessage(instance as Client, new GetOnlineFriends { FriendIds = concernedFriends, TransactionId = txId });
 
             bool didGetSignalInTime = getFriendsEvent.WaitOne(TIMEOUT_FOR_FRIEND_MESSAGES);
 
